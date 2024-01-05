@@ -51,4 +51,4 @@ import styles from './pagination.module.css';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 ```
 
-![Use client](./public/SSR.png)
+![Use client](/SSR.png)
