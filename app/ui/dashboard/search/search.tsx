@@ -1,9 +1,9 @@
 'use client';
 
-import { MdSearch } from 'react-icons/md';
-import styles from './search.module.css';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { MdSearch } from 'react-icons/md';
 import { useDebouncedCallback } from 'use-debounce';
+import styles from './search.module.css';
 
 type SearchPropsType = {
   placeholder: string;
@@ -12,15 +12,16 @@ type SearchPropsType = {
 const Search = ({ placeholder }: SearchPropsType) => {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname(); // '/dashboard/users'
 
   const handleSearch = useDebouncedCallback((e) => {
+    const searchInput = e.target.value;
     const params = new URLSearchParams(searchParams);
 
-    params.set('page', '1');
+    params.set('page', '1'); // '/dashboard/users' ==> '/dashboard/users?page=1'
 
-    if (e.target.value) {
-      e.target.value.length > 2 && params.set('q', e.target.value);
+    if (searchInput) {
+      searchInput.length > 2 && params.set('q', searchInput); // '/dashboard/users?page=1' ==> '/dashboard/users?page=1&q=admin'
     } else {
       params.delete('q');
     }

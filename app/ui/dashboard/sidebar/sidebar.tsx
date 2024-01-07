@@ -14,7 +14,7 @@ import {
 } from 'react-icons/md';
 import MenuLink from './menuLink/menuLink';
 import Image from 'next/image';
-type Props = {};
+import { auth, signOut } from '@/app/auth';
 
 const menuItems = [
   {
@@ -79,9 +79,8 @@ const menuItems = [
   },
 ];
 
-const Sidebar = (props: Props) => {
-  // const { user } = await auth();
-  const user = { img: '', username: 'Ganzorig' };
+const Sidebar = async () => {
+  const { user } = await auth();
 
   return (
     <div className={styles.container}>
@@ -114,7 +113,7 @@ const Sidebar = (props: Props) => {
       <form
         action={async () => {
           'use server';
-          // await signOut();
+          await signOut();
         }}
       >
         <button className={styles.logout}>

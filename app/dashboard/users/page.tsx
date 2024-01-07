@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import { deleteUser } from '@/app/lib/actions';
+import { fetchUsers } from '@/app/lib/data';
+import Pagination from '@/app/ui/dashboard/pagination/pagination';
 import styles from '@/app/ui/dashboard/products/products.module.css';
 import Search from '@/app/ui/dashboard/search/search';
-import Pagination from '@/app/ui/dashboard/pagination/pagination';
-import { fetchProducts } from '@/app/lib/data';
-import { deleteProduct } from '@/app/lib/actions';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface ISearchParams {
   searchParams: SearchPropsItems;
@@ -15,11 +15,11 @@ type SearchPropsItems = {
   page: number;
 };
 
+// searchParams ==> { page: '1', q: 'hello' }
 const UsersPage = async ({ searchParams }: ISearchParams) => {
   const q = searchParams?.q || '';
   const page = searchParams?.page || 1;
-  // const { count, products } = await fetchProducts(q, page);
-  const count = 2;
+  const { count, users } = await fetchUsers(q, page);
 
   return (
     <div className={styles.container}>
@@ -41,7 +41,7 @@ const UsersPage = async ({ searchParams }: ISearchParams) => {
           </tr>
         </thead>
         <tbody>
-          {/* {users.map((user) => (
+          {users.map((user) => (
             <tr key={user.id}>
               <td>
                 <div className={styles.user}>
@@ -79,7 +79,7 @@ const UsersPage = async ({ searchParams }: ISearchParams) => {
                 </div>
               </td>
             </tr>
-          ))} */}
+          ))}
         </tbody>
       </table>
       <Pagination count={count} />

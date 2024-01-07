@@ -1,11 +1,11 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { authConfig } from '../authconfig';
-import { connectToDB } from '../lib/utils';
-import { User } from '../lib/models';
+import { authConfig } from './authconfig';
+import { connectToDB } from './lib/utils';
+import { User } from './lib/models';
 import bcrypt from 'bcrypt';
 
-const login = async (credentials) => {
+const login = async (credentials: any) => {
   try {
     connectToDB();
     const user = await User.findOne({ username: credentials.username });
@@ -30,6 +30,11 @@ export const { signIn, signOut, auth } = NextAuth({
   ...authConfig,
   providers: [
     CredentialsProvider({
+      type: 'credentials',
+      credentials: {
+        username: { label: '', type: '' },
+        password: { label: '', type: '' },
+      },
       async authorize(credentials) {
         try {
           const user = await login(credentials);
@@ -42,14 +47,14 @@ export const { signIn, signOut, auth } = NextAuth({
   ],
   // ADD ADDITIONAL INFORMATION TO SESSION
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.username = user.username;
         token.img = user.img;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (token) {
         session.user.username = token.username;
         session.user.img = token.img;

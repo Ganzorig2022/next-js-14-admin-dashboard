@@ -31,9 +31,37 @@ import { MdSearch } from 'react-icons/md';
 </Link>
 ```
 
-###
+### HOOK. useSearchParams. Search params in Next.js
+
+> page.tsx file props-ooroo 'searchParams', 'params' 2-iig optional-oor awdag.
 
 ```js
+// Parent Component. Server Side Rendering
+const UsersPage = async ({ searchParams }: ISearchParams) => {
+  const q = searchParams?.q || '';
+  const page = searchParams?.page || 1;
+  const { count, users } = await fetchUsers(q, page);
+
+  return (
+   <div className={styles.top}>
+        <Search placeholder='Search for a user...' />
+        <Link href='/dashboard/users/add'>
+          <button className={styles.addButton}>Add New</button>
+        </Link>
+  </div>
+)
+
+// Child Component. Client Side Rendering
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+const Search = ({ placeholder }: SearchPropsType) => {
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const pathname = usePathname();
+
+    return // Components...
+}
+
 let url = new URL('https://example.com?foo=1&bar=2');
 let params = new URLSearchParams(url.search);
 
@@ -51,4 +79,26 @@ import styles from './pagination.module.css';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 ```
 
-![Use client](/SSR.png)
+![Use client](./public/SSR.png)
+
+### useDebouncedCallback.
+
+> it prevents frequent updates caused by rapid input changes or repeated events, allowing for smoother interactions and reduced resource consumption.
+
+```js
+import { useDebouncedCallback } from 'use-debounce';
+
+const handleSearch = useDebouncedCallback((e) => {
+  const searchInput = e.target.value;
+  const params = new URLSearchParams(searchParams);
+
+  params.set('page', '1'); // '/dashboard/users' ==> '/dashboard/users?page=1'
+
+  if (searchInput) {
+    searchInput.length > 2 && params.set('q', searchInput); // '/dashboard/users?page=1' ==> '/dashboard/users?page=1&q=admin'
+  } else {
+    params.delete('q');
+  }
+  replace(`${pathname}?${params}`);
+}, 300);
+```

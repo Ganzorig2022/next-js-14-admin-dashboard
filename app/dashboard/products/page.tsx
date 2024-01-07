@@ -18,9 +18,7 @@ type SearchPropsItems = {
 const ProductsPage = async ({ searchParams }: ISearchParams) => {
   const q = searchParams?.q || '';
   const page = searchParams?.page || 1;
-  // const { count, products } = await fetchProducts(q, page);
-  const count = 2;
-  const products = [];
+  const { count, products } = await fetchProducts(q, page);
 
   return (
     <div className={styles.container}>

@@ -5,9 +5,20 @@ import { Product, User } from './models';
 import { connectToDB } from './utils';
 import { redirect } from 'next/navigation';
 import bcrypt from 'bcrypt';
-import { signIn } from '../auth/page';
+import { signIn } from '../auth';
+import { IObject } from '../types/types';
 
-export const addUser = async (formData) => {
+export const addUser = async (formData: FormData) => {
+  // [
+  //   { name: 'username', value: 'zaya@gmail.com' },
+  //   { name: 'email', value: 'ganzorig.n@qpay.mn' },
+  //   { name: 'password', value: '123456' },
+  //   { name: 'phone', value: '88008159' },
+  //   { name: 'isAdmin', value: 'true' },
+  //   { name: 'isActive', value: 'true' },
+  //   { name: 'address', value: 'BGD' }
+  // ]
+
   const { username, email, password, phone, address, isAdmin, isActive } =
     Object.fromEntries(formData);
 
@@ -15,7 +26,7 @@ export const addUser = async (formData) => {
     connectToDB();
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = bcrypt.hash(password as string, salt);
 
     const newUser = new User({
       username,
@@ -23,8 +34,8 @@ export const addUser = async (formData) => {
       password: hashedPassword,
       phone,
       address,
-      isAdmin,
-      isActive,
+      isAdmin: isAdmin === 'false' ? false : true,
+      isActive: isActive === 'false' ? false : true,
     });
 
     await newUser.save();
@@ -37,21 +48,21 @@ export const addUser = async (formData) => {
   redirect('/dashboard/users');
 };
 
-export const updateUser = async (formData) => {
+export const updateUser = async (formData: FormData) => {
   const { id, username, email, password, phone, address, isAdmin, isActive } =
     Object.fromEntries(formData);
 
   try {
     connectToDB();
 
-    const updateFields = {
+    const updateFields: IObject = {
       username,
       email,
       password,
       phone,
       address,
-      isAdmin,
-      isActive,
+      isAdmin: isAdmin === 'false' ? false : true,
+      isActive: isActive === 'false' ? false : true,
     };
 
     Object.keys(updateFields).forEach(
@@ -69,7 +80,7 @@ export const updateUser = async (formData) => {
   redirect('/dashboard/users');
 };
 
-export const addProduct = async (formData) => {
+export const addProduct = async (formData: FormData) => {
   const { title, desc, price, stock, color, size } =
     Object.fromEntries(formData);
 
@@ -95,14 +106,14 @@ export const addProduct = async (formData) => {
   redirect('/dashboard/products');
 };
 
-export const updateProduct = async (formData) => {
+export const updateProduct = async (formData: FormData) => {
   const { id, title, desc, price, stock, color, size } =
     Object.fromEntries(formData);
 
   try {
     connectToDB();
 
-    const updateFields = {
+    const updateFields: IObject = {
       title,
       desc,
       price,
@@ -126,7 +137,7 @@ export const updateProduct = async (formData) => {
   redirect('/dashboard/products');
 };
 
-export const deleteUser = async (formData) => {
+export const deleteUser = async (formData: FormData) => {
   const { id } = Object.fromEntries(formData);
 
   try {
@@ -140,7 +151,7 @@ export const deleteUser = async (formData) => {
   revalidatePath('/dashboard/products');
 };
 
-export const deleteProduct = async (formData) => {
+export const deleteProduct = async (formData: FormData) => {
   const { id } = Object.fromEntries(formData);
 
   try {
@@ -154,12 +165,12 @@ export const deleteProduct = async (formData) => {
   revalidatePath('/dashboard/products');
 };
 
-export const authenticate = async (prevState, formData) => {
+export const authenticate = async (prevState: any, formData: FormData) => {
   const { username, password } = Object.fromEntries(formData);
 
   try {
     await signIn('credentials', { username, password });
-  } catch (err) {
+  } catch (err: any) {
     if (err.message.includes('CredentialsSignin')) {
       return 'Wrong Credentials';
     }

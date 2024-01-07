@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 type a = {
-  isConnected: string;
+  isConnected: number;
 };
 const connection = {} as a;
 
@@ -10,7 +10,7 @@ export const connectToDB = async () => {
     if (connection.hasOwnProperty('isConnected')) return;
     const db = await mongoose.connect(process.env.MONGO as string);
     console.log(
-      'MogoDB connection is successfull!',
+      'MongoDB connection is successfull!',
       db.connections[0].readyState,
     );
     connection.isConnected = db.connections[0].readyState;
